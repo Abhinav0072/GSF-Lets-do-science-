@@ -1,0 +1,9 @@
+theta1=[9,1,0,1;8,1,1,1];
+theta2=[7,2,0;6,1,2];
+theta3=[5,0,1;4,1,0];
+theta4=[3,1,1;2,0,1;1,0,2];
+X=[2,4,6;1,3,5];
+y=[1,2];
+lambda=0;
+NN_param=[theta1(:);theta2(:);theta3(:);theta4(:)];
+[j,g]=calculate_cost(X,y,3,3,2,3,NN_param,lambda);

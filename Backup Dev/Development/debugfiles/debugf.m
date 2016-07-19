@@ -1,0 +1,1 @@
+[curvature,torsion]=feature_extract(A(:,1),A(:,2),A(:,3));

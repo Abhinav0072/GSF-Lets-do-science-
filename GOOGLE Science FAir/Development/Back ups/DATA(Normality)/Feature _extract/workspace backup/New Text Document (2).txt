@@ -1,0 +1,33 @@
+%% Finding Gradient using Backpropagation algorithm ..
+delta_l=h-logical_y;                                                              %% delta of last layer
+delta_temp=delta_l;
+Theta_grad_others=zeros((k_layer-1)*hidden_l_size,hidden_l_size+1);
+for i=k_layer:-1:1,                                                               %% calculating delta from other layer.
+    if(i==k_layer),
+        Theta_k_grad_temp=((delta_l')*a_rest(end-m+1:end,:))./m;
+        Theta_k_grad_zero=Theta_k_grad_temp(:,1);
+        Theta_k_grad_rest=Theta_k_grad_temp(:,2:end)+(lambda./(m)).*Theta_k(:,2:end);
+        Theta_k_grad=[Theta_k_grad_zero,Theta_k_grad_rest];                       %% Grad for last layer.(storing it seperately)
+    
+    elseif(i==k_layer-1),
+        delta_temp=(delta_temp*Theta_k).*sigmoidGradient(z_rest(end-m+1:end,:));
+        Theta_grad_temp=((delta_temp')*a_rest(end-2*m+1:end-m,:))./m;
+        Theta_grad_zero=Theta_grad_temp(:,1);
+        Theta_grad_rest=Theta_grad_temp(:,2:end)+(lambda./m).*Theta_hidden(end-hidden_l_size+1:end,2:end);
+        Theta_grad_others(end-hidden_l_size+1:end,:)=[Theta_grad_zero,Theta_grad_rest];  %% Grad for rest
+        
+    elseif(i>=2)
+        n=k_layer-i-1;
+        delta_temp=delta_temp*Theta_hidden(end-hidden_l_size*(n)+1:end-hidden_l_size*(n-1),:).*sigmoidGradient(z_rest(end-m*(n+1)+1:end-m*n,:));
+        Theta_grad_temp=((delta_temp')*a_rest(end-m*(n+2)+1:end-m*(n+1),:))./m;
+        Theta_grad_zero=Theta_grad_temp(:,1);
+        Theta_grad_rest=Theta_grad_temp(:,2:end)+(lambda./m).*Theta_hidden(end-(n+1)*hidden_l_size+1:end-n*hidden_l_size,2:end);
+        Theta_grad_others(end-(n+1)*hiddden_l_size+1:end-n*hidden_l_size,:)=[Theta_grad_zero,Theta_grad_rest];
+    end
+end
+ 
+delta_2=delta_temp*Theta_hidden(1:hidden_l_size,:).sigmoidGradient(z2);
+Theta_grad_temp=(delta_2'*X)./m;
+Theta_grad_zero=Theta_grad_temp(:,1);
+Theta_grad_rest=Theta_grad_temp(:,2:end)+(lambda./m).*Theta1(:,2:end);
+Theta_grad_1=[Theta_grad_zero,Theta_grad_rest];
